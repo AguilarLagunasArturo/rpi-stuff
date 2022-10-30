@@ -1,4 +1,5 @@
 # RPI
+This is the greatest RPI setup of all time.
 
 ## Setup
 Stuff I usually install.
