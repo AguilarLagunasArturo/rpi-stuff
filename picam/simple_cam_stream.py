@@ -19,7 +19,7 @@ HOST = get_local_ip()
 VIDEO_PORT = 6282
 
 frame = []
-update = False
+# update = False
 app = Flask(__name__)
 
 @app.route('/')
@@ -39,14 +39,17 @@ def stream():
 
 def get_frames():
     global frame
-    global update
+    #global update
     while True:
-        if update:
-            sleep(0.1)
+        #if update:
+        sleep(0.1)
+        try:
             ret, buffer = cv.imencode('.jpg', frame)
-            frame = buffer.tobytes()
-            yield (b'--frame\r\n'
-                 b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+        except:
+            continue
+        frame = buffer.tobytes()
+        yield (b'--frame\r\n'
+             b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 def start_flask():
     app.run(debug=False, host=HOST, port=VIDEO_PORT)
@@ -61,10 +64,10 @@ cam = cv.VideoCapture(0)
 sleep(2.0)
 # capture frames from the camera
 while True:
-	_, frame = cam.read()
-	cv.imshow('grid', frame)
-	if not update: update = True
-	if cv.waitKey(1) & 0xFF == ord("q"):
-		break
+    _, frame = cam.read()
+    # cv.imshow('grid', frame)
+    # if not update: update = True
+    if cv.waitKey(1) & 0xFF == ord("q"):
+        break
 cam.release()
 cv.destroyAllWindows()
