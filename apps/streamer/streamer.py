@@ -21,6 +21,7 @@ class Streamer():
         self.res = res
         self.fps = fps
         self.camera = PiCam(res, fps)
+        self.camera.videoCapture()
 
         self.app = Flask(app_name)
         self.setup_routes()
@@ -154,6 +155,7 @@ class Streamer():
                 else:
                     self.record = True
                     self.set_up_record()
+                    self.start_cam()
             elif data['action'] == 'stop':
                 print("[+] Stop pressed")
                 self.record = False
@@ -164,23 +166,11 @@ class Streamer():
         self.app.run(debug=False, host=self.HOST, port=self.VIDEO_PORT)
 
     def start_cam(self):
-        self.camera.videoCapture()
-
-        # allow the camera to warmup
-        sleep(2.0)
-        # capture frames from the camera
-        while True:
-            sleep(0.2)
+        while self.record:
             self.frame = self.camera.current_frame
-            # if not update: update = True
-            if cv.waitKey(1) & 0xFF == ord("q"):
-                break
-        # update = False
-        cv.destroyAllWindows()
 
 if __name__ == '__main__':
-    s = Streamer(app_name = __name__, record = True)
+    s = Streamer(app_name = __name__, record = False)
     s.info()
     t_flask = threading.Thread(target=s.start_flask, args=())
     t_flask.start()
-    s.start_cam()
