@@ -42,7 +42,7 @@ def get_frames():
     #global update
     while True:
         #if update:
-        sleep(0.1)
+        sleep(0.5)
         try:
             ret, buffer = cv.imencode('.jpg', frame)
         except:
@@ -64,6 +64,7 @@ cam = cv.VideoCapture(0)
 sleep(2.0)
 # capture frames from the camera
 while True:
+    sleep(0.5)
     _, frame = cam.read()
     # cv.imshow('grid', frame)
     # if not update: update = True
